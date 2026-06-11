@@ -37,7 +37,6 @@ jobs:
       - name: Deploy no Azure Web App
         uses: azure/cli@v2
         env:
-          # This forces GitHub to pass these variables INTO the Azure CLI Docker container
           WEBAPP_NAME: ${{ env.WEBAPP_NAME }}
           RESOURCE_GROUP: ${{ env.RESOURCE_GROUP }}
           ACR_NAME: ${{ env.ACR_NAME }}
