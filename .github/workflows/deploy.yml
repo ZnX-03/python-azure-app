@@ -9,7 +9,6 @@ env:
   ACR_NAME: crudpythonaulacloud
   IMAGE_NAME: projetoweb
   WEBAPP_NAME: cloudio
-  RESOURCE_GROUP: rg-python-aula
 
 jobs:
   build-and-deploy:
@@ -18,11 +17,6 @@ jobs:
     steps:
       - name: Checkout do código
         uses: actions/checkout@v4
-
-      - name: Login no Azure
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Login no ACR
         uses: azure/docker-login@v1
@@ -43,4 +37,5 @@ jobs:
         uses: azure/webapps-deploy@v2
         with:
           app-name: ${{ env.WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
           images: ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
