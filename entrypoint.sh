@@ -7,7 +7,7 @@ python manage.py shell <<EOF
 from django.contrib.auth import get_user_model
 User = get_user_model()
 if not User.objects.filter(username='admin').exists():
-    User.objects.create_superuser('admin', 'admin@email.com', 'SUA_NOVA_SENHA_AQUI')
+    User.objects.create_superuser('admin', 'admin@email.com', 'opet2026')
     print("Superusuário criado com sucesso.")
 else:
     u = User.objects.get(username='admin')
