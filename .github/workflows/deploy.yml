@@ -5,14 +5,10 @@ on:
     branches:
       - main
 
-
-      
-
 env:
   ACR_NAME: crudpythonaulacloud
   IMAGE_NAME: projetoweb
   WEBAPP_NAME: cloudio
-  RESOURCE_GROUP: seu-grupo-de-recursos-aqui # <-- ADICIONE ISSO AQUI COM O NOME DO SEU GRUPO
 
 jobs:
   build-and-deploy:
@@ -22,17 +18,12 @@ jobs:
       - name: Checkout do código
         uses: actions/checkout@v4
 
-      - name: Login no ACR
+      - name: Login no ACR (Docker Registry)
         uses: azure/docker-login@v1
         with:
           login-server: ${{ env.ACR_NAME }}.azurecr.io
           username: ${{ secrets.ACR_USERNAME }}
           password: ${{ secrets.ACR_PASSWORD }}
-
-      - name: Login no Azure
-        uses: azure/login@v2
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Build e Push da imagem Docker
         run: |
@@ -42,9 +33,10 @@ jobs:
                      ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:latest
           docker push ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:latest
 
-      - name: Deploy no Azure Web App
+      # This replaces BOTH the azure/login and azure/cli steps completely!
+      - name: Deploy no Azure Web App via Publish Profile
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'cloudio'
+          app-name: ${{ env.WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          images: 'crudpythonaulacloud.azurecr.io/projetoweb:${{ github.sha }}'
+          images: '${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}'
