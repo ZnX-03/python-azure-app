@@ -43,13 +43,8 @@ jobs:
           docker push ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:latest
 
       - name: Deploy no Azure Web App
-        uses: azure/cli@v2
+        uses: azure/webapps-deploy@v3
         with:
-          inlineScript: |
-            az webapp config container set \
-              --name "cloudio" \
-              --resource-group "rg-python-aula" \
-              --container-image-name "crudpythonaulacloud.azurecr.io/projetoweb:${{ github.sha }}" \
-              --container-registry-url "https://crudpythonaulacloud.azurecr.io" \
-              --container-registry-user "${{ secrets.ACR_USERNAME }}" \
-              --container-registry-password "${{ secrets.ACR_PASSWORD }}"
+          app-name: 'cloudio'
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          images: '${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}'
