@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Confirmar Exclusão</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 40px auto; padding: 0 20px; }
+        h1 { color: #c0392b; }
+        .card {
+            border: 1px solid #f5c6cb; background-color: #fff5f5;
+            border-radius: 8px; padding: 20px; margin-top: 20px;
+        }
+        .info { margin: 8px 0; color: #555; }
+        .info strong { color: #333; }
+        .btn { padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; margin-top: 20px; margin-right: 10px; font-size: 15px; }
+        .btn-excluir { background-color: #dc3545; color: white; }
+        .btn-excluir:hover { background-color: #c82333; }
+        .btn-cancelar { background-color: #6c757d; color: white; text-decoration: none; display: inline-block; }
+        .btn-cancelar:hover { background-color: #5a6268; }
+    </style>
+</head>
+<body>
+    <h1>⚠️ Confirmar Exclusão</h1>
+
+    <div class="card">
+        <p>Tem certeza que deseja excluir o curso abaixo? Esta ação <strong>não pode ser desfeita</strong>.</p>
+        <p class="info"><strong>Nome:</strong> {{ curso.nome }}</p>
+        <p class="info"><strong>Carga Horária:</strong> {{ curso.carga_horaria }}h</p>
+        <p class="info"><strong>Criado em:</strong> {{ curso.data_criacao|date:"d/m/Y H:i" }}</p>
+        <p class="info"><strong>Status:</strong> {% if curso.ativo %}Ativo{% else %}Inativo{% endif %}</p>
+    </div>
+
+    <form method="POST" action="{% url 'excluir_curso' curso.id %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-excluir">🗑️ Sim, Excluir</button>
+        <a href="{% url 'listar_cursos' %}" class="btn btn-cancelar">✖ Cancelar</a>
+    </form>
+</body>
+</html>

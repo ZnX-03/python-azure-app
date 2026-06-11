@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=<device-width>, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Crie seu curso</h1>
+    <hr/>
+    <form action="/cursos/criar_curso/" method="POST"> {% csrf_token %}
+        <label for="">Nome do curso:</label>
+        <input type="text" name="nome">
+
+        <label for="">Carga horária:</label>
+        <input type="number" name="carga_horaria">
+
+        <input type="submit" value="Enviar">
+    </form>
+    {% if status == '1'  %}
+        <div class="alert alert-success" role="alert">
+        Dados salvos com sucesso!
+        </div>
+    {% endif %}
+
+    <a href="{% url 'listar_cursos' %}" >Listar Cursos</a>
+</body></html>

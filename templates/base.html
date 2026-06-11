@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block titulo %}Portal Cooperativa{% endblock %}</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; background: #f4f6f9; color: #333; }
+        header {
+            background: #343a40;
+            color: white;
+            padding: 14px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        header h2 { font-size: 18px; }
+        header .nav-user { display: flex; align-items: center; gap: 12px; font-size: 14px; }
+        header .btn-logout {
+            background: #dc3545; color: white; border: none;
+            padding: 6px 14px; border-radius: 4px; cursor: pointer; font-size: 13px;
+        }
+        header .btn-logout:hover { background: #c82333; }
+        main { max-width: 960px; margin: 40px auto; padding: 0 20px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h2>🏢 Portal Cooperativa</h2>
+    {% if user.is_authenticated %}
+    <div class="nav-user">
+        <span>Olá, <strong>{{ user.username }}</strong></span>
+        <form method="POST" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn-logout">Sair</button>
+        </form>
+    </div>
+    {% endif %}
+</header>
+
+<main>
+    {% block conteudo %}{% endblock %}
+</main>
+
+</body>
+</html>
