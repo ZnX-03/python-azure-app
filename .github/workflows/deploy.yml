@@ -9,6 +9,7 @@ env:
   ACR_NAME: crudpythonaulacloud
   IMAGE_NAME: projetoweb
   WEBAPP_NAME: cloudio
+  RESOURCE_GROUP: seu-grupo-de-recursos-aqui # <-- ADICIONE ISSO AQUI COM O NOME DO SEU GRUPO
 
 jobs:
   build-and-deploy:
