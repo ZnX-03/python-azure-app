@@ -15,5 +15,4 @@ RUN python manage.py collectstatic --noinput
 
 EXPOSE 8000
 
-# Executa apenas as migrações e sobe o servidor gunicorn
 CMD ["sh", "-c", "python manage.py migrate --noinput && gunicorn projetoweb.wsgi:application --bind 0.0.0.0:${PORT:-8000} --workers 2 --timeout 120"]
