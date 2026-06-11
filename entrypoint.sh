@@ -1,6 +1,8 @@
 #!/bin/bash
+set -e
 
-# ... seus comandos existentes (como python manage.py migrate) ...
+echo "--> Rodando migrations..."
+python manage.py migrate --noinput
 
 echo "--> Gerenciando o superusuário..."
 python manage.py shell <<EOF
@@ -16,4 +18,5 @@ else:
     print("Senha do superusuário atualizada com sucesso.")
 EOF
 
-# ... comando para rodar o gunicorn ...
+echo "--> Iniciando servidor..."
+exec gunicorn projetoweb.wsgi:application --bind 0.0.0.0:${PORT:-8000} --workers 2 --timeout 120
