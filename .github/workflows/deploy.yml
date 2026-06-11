@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+
+      
+
 env:
   ACR_NAME: crudpythonaulacloud
   IMAGE_NAME: projetoweb
@@ -25,6 +28,11 @@ jobs:
           login-server: ${{ env.ACR_NAME }}.azurecr.io
           username: ${{ secrets.ACR_USERNAME }}
           password: ${{ secrets.ACR_PASSWORD }}
+
+      - name: Login no Azure
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Build e Push da imagem Docker
         run: |
