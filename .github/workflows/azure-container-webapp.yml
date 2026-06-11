@@ -1,22 +1,23 @@
-name: Build and deploy a container to an Azure Web App
-
-env:
-  AZURE_WEBAPP_NAME: 'cloudio'
+name: CI/CD - Build e Deploy Azure
 
 on:
   push:
-    branches: [ "main" ]
-  workflow_dispatch:
+    branches:
+      - main
 
-permissions:
-  contents: read
+env:
+  ACR_NAME: crudpythonaulacloud
+  IMAGE_NAME: projetoweb
+  WEBAPP_NAME: cloudio
+  RESOURCE_GROUP: rg-python-aula
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout do código
+        uses: actions/checkout@v4
 
       - name: Login no Azure
         uses: azure/login@v1
@@ -24,28 +25,22 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Login no ACR
-        run: az acr login --name CRUDpythonaulacloud
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build Docker
-        run: |
-          docker build -t crudpythonaulacloud.azurecr.io/minha-app:latest .
-
-      - name: Push Docker
-        run: |
-          docker push crudpythonaulacloud.azurecr.io/minha-app:latest
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-
-    steps:
-      - name: Login Azure
-        uses: azure/login@v1
+        uses: azure/docker-login@v1
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          login-server: ${{ env.ACR_NAME }}.azurecr.io
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
 
-      - name: Restart WebApp
+      - name: Build e Push da imagem Docker
         run: |
+          docker build -t ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.sha }} .
+          docker push ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          docker tag ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.sha }} \
+                     ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:latest
+          docker push ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:latest
+
+      - name: Deploy no Azure Web App
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ env.WEBAPP_NAME }}
+          images: ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
