@@ -38,10 +38,4 @@ jobs:
         uses: azure/cli@v2
         with:
           inlineScript: |
-            az webapp config container set \
-              --name ${{ env.WEBAPP_NAME }} \
-              --resource-group ${{ env.RESOURCE_GROUP }} \
-              --container-image-name ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.sha }} \
-              --container-registry-url https://${{ env.ACR_NAME }}.azurecr.io \
-              --container-registry-user ${{ secrets.ACR_USERNAME }} \
-              --container-registry-password ${{ secrets.ACR_PASSWORD }}
+            az webapp config container set --name "${{ env.WEBAPP_NAME }}" --resource-group "${{ env.RESOURCE_GROUP }}" --container-image-name "${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}" --container-registry-url "https://${{ env.ACR_NAME }}.azurecr.io" --container-registry-user "${{ secrets.ACR_USERNAME }}" --container-registry-password "${{ secrets.ACR_PASSWORD }}"
