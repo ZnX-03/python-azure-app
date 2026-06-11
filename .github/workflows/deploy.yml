@@ -8,7 +8,6 @@ on:
 env:
   ACR_NAME: crudpythonaulacloud
   IMAGE_NAME: projetoweb
-  WEBAPP_NAME: cloudio
 
 jobs:
   build-and-deploy:
@@ -18,7 +17,7 @@ jobs:
       - name: Checkout do código
         uses: actions/checkout@v4
 
-      - name: Login no ACR (Docker Registry)
+      - name: Login no ACR
         uses: azure/docker-login@v1
         with:
           login-server: ${{ env.ACR_NAME }}.azurecr.io
@@ -33,10 +32,5 @@ jobs:
                      ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:latest
           docker push ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:latest
 
-      # This replaces BOTH the azure/login and azure/cli steps completely!
-      - name: Deploy no Azure Web App via Publish Profile
-        uses: azure/webapps-deploy@v3
-        with:
-          app-name: ${{ env.WEBAPP_NAME }}
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          images: '${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}'
+      - name: Deploy concluído
+        run: echo "Imagem publicada no ACR. O Azure Web App irá redeployar automaticamente via webhook."
