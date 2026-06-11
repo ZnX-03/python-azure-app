@@ -1,3 +1,4 @@
+cat > /tmp/Dockerfile_final << 'EOF'
 FROM python:3.11-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1
