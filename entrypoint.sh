@@ -1,22 +1,19 @@
-#!/bin/sh
+#!/bin/bash
 
-# Exit immediately if a command exits with a non-zero status
-set -e
+# ... seus comandos existentes (como python manage.py migrate) ...
 
-echo "--> Applying database migrations..."
-python manage.py migrate --noinput
-
-echo "--> Creating superuser if it doesn't exist..."
+echo "--> Gerenciando o superusuário..."
 python manage.py shell <<EOF
 from django.contrib.auth import get_user_model
 User = get_user_model()
 if not User.objects.filter(username='admin').exists():
-    User.objects.create_superuser('admin', 'admin@email.com', 'admin123')
-    print("Superuser created successfully.")
+    User.objects.create_superuser('admin', 'admin@email.com', 'SUA_NOVA_SENHA_AQUI')
+    print("Superusuário criado com sucesso.")
 else:
-    print("Superuser already exists.")
+    u = User.objects.get(username='admin')
+    u.set_password('opet2026')
+    u.save()
+    print("Senha do superusuário atualizada com sucesso.")
 EOF
 
-echo "--> Starting Gunicorn..."
-# 'exec' ensures Gunicorn becomes PID 1, receiving OS signals perfectly
-exec gunicorn projetoweb.wsgi:application --bind 0.0.0.0:8000 --workers 2
+# ... comando para rodar o gunicorn ...
