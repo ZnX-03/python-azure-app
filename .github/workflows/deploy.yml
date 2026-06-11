@@ -36,21 +36,12 @@ jobs:
 
       - name: Deploy no Azure Web App
         uses: azure/cli@v2
-        env:
-          WEBAPP_NAME: ${{ env.WEBAPP_NAME }}
-          RESOURCE_GROUP: ${{ env.RESOURCE_GROUP }}
-          ACR_NAME: ${{ env.ACR_NAME }}
-          IMAGE_NAME: ${{ env.IMAGE_NAME }}
-          ACR_USERNAME: ${{ secrets.ACR_USERNAME }}
-          ACR_PASSWORD: ${{ secrets.ACR_PASSWORD }}
         with:
           inlineScript: |
-            echo "Checking if variable reached the container: Resource Group is '$RESOURCE_GROUP'"
-            
             az webapp config container set \
-              --name "$WEBAPP_NAME" \
-              --resource-group "$RESOURCE_GROUP" \
-              --container-image-name "${ACR_NAME}.azurecr.io/${IMAGE_NAME}:${{ github.sha }}" \
-              --container-registry-url "https://${ACR_NAME}.azurecr.io" \
-              --container-registry-user "$ACR_USERNAME" \
-              --container-registry-password "$ACR_PASSWORD"
+              --name "cloudio" \
+              --resource-group "rg-python-aula" \
+              --container-image-name "crudpythonaulacloud.azurecr.io/projetoweb:${{ github.sha }}" \
+              --container-registry-url "https://crudpythonaulacloud.azurecr.io" \
+              --container-registry-user "${{ secrets.ACR_USERNAME }}" \
+              --container-registry-password "${{ secrets.ACR_PASSWORD }}"
